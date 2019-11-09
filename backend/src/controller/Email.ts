@@ -16,7 +16,7 @@ export default class EmailController {
      * 
      * 
      */
-    public static send(req: Request, res: Response): Response {
+    public static async send(req: Request, res: Response): Promise<Response> {
         const { from, pass, to, subject, text } = req.body;
         
         const sender: SenderInterface = {
@@ -39,7 +39,7 @@ export default class EmailController {
         });
 
         try {
-            email.sendMail({
+            await email.sendMail({
                 from: receiver.from,
                 to: receiver.to,
                 subject: receiver.subject,
@@ -47,7 +47,7 @@ export default class EmailController {
             });
             return res.json({message: "email sent"})
         }catch(e) {
-            return res.json({error: `Error sendind email ${e.message}`});
+            return res.status(400).json({error: `Error sendind email: ${e.message}`});
         }
 
         
